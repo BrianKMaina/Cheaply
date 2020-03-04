@@ -10,7 +10,7 @@
     "http": "0.0.0",
     "app-module-path": "2.2.0",
     "body-parser": "1.16.0",
-    "ejs": "2.4.1",
+    "ejs": "3.0.1",
     "express": "4.13.3",
     "express-session": "^1.14.2",
     "file-system": "^2.2.2",
