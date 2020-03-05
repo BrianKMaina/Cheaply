@@ -22,6 +22,10 @@ router.get( '/', client.home);
 
 router.get("/home", client.index);
 
+router.get("/login", client.login);
+
+router.get("/signup", client.signup);
+
 router.get("/home-m", client.indexM)
 
 router.get("/setPassword", client.setPassword);
@@ -29,4 +33,3 @@ router.get("/setPassword", client.setPassword);
 router.post("/setPassword", bodyParser.urlencoded ({extended : false}), client.activateUser);
 
 module.exports = router;
-     

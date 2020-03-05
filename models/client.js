@@ -10,7 +10,7 @@ var express = require ( "express" ),
 	require('firebase/auth');
 
 	require ("firebase/database");
- 
+
  /* used for send mails using smtp*/
 
 var smtpTransport = require('nodemailer-smtp-transport');
@@ -87,7 +87,7 @@ clientAuth.prototype.checkRegisterStatus = function(uid , done)
 
 /*
 	update password and store in database.
-	Input :- userId, 
+	Input :- userId,
 			new password,
 	output :- return callback of successfull operation/error.
 */
@@ -100,10 +100,10 @@ clientAuth.prototype.sendVerification = function(uid, password , done)
 	 		 password: password
 		})
 	  .then(function(userRecord) {
-	  	
-	  		done(null, userRecord.toJSON())		
-	  	
-	    
+
+	  		done(null, userRecord.toJSON())
+
+
 	  })
 	  .catch(function(error) {
 	  	done(error)
@@ -118,12 +118,12 @@ clientAuth.prototype.sendVerification = function(uid, password , done)
 /*
 	When server remove queue from database, before this increase the stock quantity of the product.
 	this function is used todo this task.
-	
+
 	Input :- info object contain : productId,
 			 value
 	output :- return Promise.
-	
-	Dependencies :- It use Transaction function to increase or decrease quantity of product. 
+
+	Dependencies :- It use Transaction function to increase or decrease quantity of product.
 */
 
 clientAuth.prototype.addQueueQuantityToStock = function(info, value) {
@@ -131,29 +131,29 @@ clientAuth.prototype.addQueueQuantityToStock = function(info, value) {
 	return new Promise (function (resolve, reject)
 	{
 		var dbItemRef=dataRef.child('product/').child( info.productId).child("inStock");
-   		dbItemRef.transaction(function(inStock) 
+   		dbItemRef.transaction(function(inStock)
    		{
 			if(inStock != null)
 			{
-		    		inStock = (inStock*1000 + value*1000)/1000; 
+		    		inStock = (inStock*1000 + value*1000)/1000;
 		      		resolve(inStock)
 			}
-			return inStock;    
+			return inStock;
 	   	});
 	})
 };
 
 /*
 	this function is used to remove the queue of the single user, and update original product quantity from the database.
-	
+
 	Input :- UserId,
 			userQueue,
 	Output :- return callback.
-	
-	Dependencies :- 
+
+	Dependencies :-
 				addQueueQuantityToStock(),
 				remove();
-			
+
 */
 clientAuth.prototype.removeQueue = function (user,key,done)
 {
@@ -177,7 +177,7 @@ clientAuth.prototype.removeQueue = function (user,key,done)
 		})
 		.catch(error=>{
 			done (error);
-		})	
+		})
 	}
 
 }
@@ -186,11 +186,11 @@ clientAuth.prototype.removeQueue = function (user,key,done)
 	get pending queue from the database, whose last request time is greater than 30 min.
 	Input : oldtime : before 30 min from now
 	Output : return callback, It contain queues of user.
-	
+
 */
 
 clientAuth.prototype.getPendingQueue = function(oldTime, done)
-{	
+{
 	var queueRef = dataRef.child("queue").orderByChild("lastRequestTime").startAt(-oldTime)
 
 	queueRef.once("value", function(queueValue)
@@ -201,7 +201,7 @@ clientAuth.prototype.getPendingQueue = function(oldTime, done)
 
 /*
 	send mail to the user, when user buy product , and also send mail when admin confirm those product for delivery.
-	
+
 	It used Child_added event for sending mail to the user, if any messege is detect on the firebase, it pick that messege and send to the user,
 */
 
@@ -212,15 +212,15 @@ clientAuth.prototype.getPendingRequest = function()
 		var emailInfo = snap.val()
 	var mailOptions = {
 			from: 'Gurjinder Singh',
-			to: emailInfo.email, 
-			subject: 'Coveda-Team Order  ✔', 
-			text: 'Hello world ?'  
+			to: emailInfo.email,
+			subject: 'Coveda-Team Order  ✔',
+			text: 'Hello world ?'
 		};
 
 		mailOptions.html = emailInfo.body
 
 		transporter.sendMail(mailOptions, (error, inf) => {
-		    if (error) 
+		    if (error)
 		    {
 		        return console.log(error);
 		    }

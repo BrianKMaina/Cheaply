@@ -31,27 +31,27 @@ var client = {};
 
 var transporter = nodemailer.createTransport(gmailInformation);
 
-var TIMEINTERVAL = 5;// in minute 
+var TIMEINTERVAL = 5;// in minute
 
 var MINUTE = 30;
 /*
-	purpose : 
+	purpose :
 		-> this function is for checking queue for every user, It remove the queue of the perticular user, whose ordered product still in the queue,
 		-> it refresh after every 5 min.
 		-> delete those queue whose last requested time is greater than 30 min.
 
 	input :- none
-	output :- delete queue from database 
+	output :- delete queue from database
 
-	dependencies: 
+	dependencies:
 		-> ClientAuth.getPendingQuese
 		-> clientAuth.removeQueue
 */
 
-function intervalFunc () 
+function intervalFunc ()
 {
 	currentTimeStamp = Date.now();
-	
+
 	previousTimeStamp = currentTimeStamp - 1000*60*MINUTE;
 
 	ClientAuth.getPendingQueue(previousTimeStamp, function(queue)
@@ -67,7 +67,7 @@ function intervalFunc ()
 						{
 							console.log (error)
 							return;
-						}			
+						}
 						console.log(status)
 					})
 
@@ -76,13 +76,13 @@ function intervalFunc ()
 				{
 					console.log("queue is expired")
 				}
-			}	
+			}
 		}
 		else
 		{
 			console.log ("Queue Refreshed.");
 		}
-	}) 
+	})
 }
 
 setInterval(function(){
@@ -121,13 +121,22 @@ client.home = function (request, response)
 {
 	response.render("login.ejs");
 }
+client.login = function (request, response)
+{
+	response.render("login.ejs");
+}
+client.signup = function (request, response)
+{
+	response.render("signup.ejs");
+}
+
 
 /*
 	when user is created by admin,  then a mail is send to client. In mail a link is send to the user for updating his password.
 	when user click on this link a request is generated , then this function is  called.
 	this function is called for rendering set user password page.
-	
-	this function check the validation of the user, It allow user to  click only one time. if user already click on this , it show link expire. 
+
+	this function check the validation of the user, It allow user to  click only one time. if user already click on this , it show link expire.
 
 */
 
@@ -136,7 +145,7 @@ client.setPassword=function (request, response)
 
 	var url_parts = url.parse(request.url, true);
 	var uid = request.query.u;
-	
+
 	if(uid)
 	{
 		ClientAuth.checkRegisterStatus(uid, function(email)
@@ -196,7 +205,7 @@ function extractObject (request, callback)
               callback (post)
 
       });
-   
+
 }
 /*
 	send mail to the user
@@ -206,15 +215,15 @@ function sendMailTo(userEmail, userName)
 {
 	 var mailOptions = {
 		from: '"D 👻" <devprasan4@gmail.com>',
-		to: userEmail, 
-		subject: 'Order  ✔', 
-		text: 'Hello world ?'  
+		to: userEmail,
+		subject: 'Order  ✔',
+		text: 'Hello world ?'
 	};
 
 	mailOptions.html = setPasswordMailBodyFor(userName);
 
 	transporter.sendMail(mailOptions, (error, inf) => {
-	    if (error) 
+	    if (error)
 	    {
 	        return console.log(error);
 	    }
